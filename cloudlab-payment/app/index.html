@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberBank - Fargate & DynamoDB</title>
+    <style>
+        :root { --bg-color: #0f172a; --panel-color: #1e293b; --primary-accent: #00ffcc; --text-main: #f8fafc; }
+        body { background-color: var(--bg-color); color: var(--text-main); font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px;}
+        .container { background: var(--panel-color); padding: 30px; border-radius: 16px; width: 100%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        input, select { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; box-sizing: border-box; }
+        button { width: 100%; padding: 14px; background: var(--primary-accent); color: var(--bg-color); border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-bottom: 10px;}
+        .hidden { display: none; }
+        .history-box { margin-top: 20px; background: #0f172a; padding: 15px; border-radius: 8px; font-size: 0.85em; max-height: 150px; overflow-y: auto;}
+        .history-item { border-bottom: 1px solid #334155; padding: 5px 0; }
+        .amount { font-size: 2.5em; font-weight: bold; text-align: center; margin: 20px 0; color: var(--primary-accent);}
+    </style>
+</head>
+<body>
+
+    <!-- TELA DE LOGIN -->
+    <div id="login-screen" class="container">
+        <h2 style="text-align: center; color: var(--primary-accent);">CyberBank Login</h2>
+        <input type="text" id="loginUser" placeholder="Usuário">
+        <input type="password" id="loginPass" placeholder="Senha">
+        <button onclick="login()">Entrar no Sistema Segurado</button>
+        <div id="loginMsg" style="color: #ff4d4f; text-align: center;"></div>
+    </div>
+
+    <!-- TELA DO APLICATIVO -->
+    <div id="app-screen" class="container hidden">
+        <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #334155; padding-bottom: 10px;">
+            <h3 style="margin: 0;">Olá, <span id="uiName"></span></h3>
+            <button style="width: auto; padding: 5px 10px; font-size: 0.8em;" onclick="logout()">Sair</button>
+        </div>
+        
+        <div class="amount">R$ <span id="uiBalance">...</span></div>
+
+        <select id="recipient">
+            <option value="demay">Demay</option>
+            <option value="joao">João Gustavo</option>
+        </select>
+        <input type="number" id="pixAmount" placeholder="0.00" step="0.01">
+        <button onclick="fazerPix()">Enviar Pix</button>
+        <div id="pixMsg" style="text-align: center; font-size: 0.9em;"></div>
+
+        <div class="history-box" id="historyBox">Carregando histórico...</div>
+    </div>
+
+    <script>
+        let currentUser = '';
+
+        async function login() {
+            const user = document.getElementById('loginUser').value;
+            const pass = document.getElementById('loginPass').value;
+            const res = await fetch('/api/login', {
+                method: 'POST', headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({username: user, password: pass})
+            });
+            const data = await res.json();
+            if(data.success) {
+                currentUser = data.user.username;
+                document.getElementById('uiName').innerText = data.user.name;
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('app-screen').classList.remove('hidden');
+                atualizarDados();
+            } else {
+                document.getElementById('loginMsg').innerText = "Falha na autenticação.";
+            }
+        }
+
+        async function atualizarDados() {
+            // Puxa Saldo
+            const resBal = await fetch(`/api/balance/${currentUser}`);
+            const dataBal = await resBal.json();
+            document.getElementById('uiBalance').innerText = dataBal.balance;
+
+            // Puxa Histórico
+            const resHist = await fetch('/api/history');
+            const dataHist = await resHist.json();
+            const box = document.getElementById('historyBox');
+            box.innerHTML = '<strong>Histórico de Transações:</strong><br>';
+            dataHist.forEach(t => {
+                const dataFormatada = new Date(t.timestamp).toLocaleString('pt-BR');
+                box.innerHTML += `<div class="history-item">[${dataFormatada}] ${t.sender} ➔ ${t.recipient} : <strong>R$ ${t.amount}</strong></div>`;
+            });
+        }
+
+        async function fazerPix() {
+            const recipient = document.getElementById('recipient').value;
+            const amount = parseFloat(document.getElementById('pixAmount').value);
+            const msg = document.getElementById('pixMsg');
+
+            if(recipient === currentUser) { msg.innerText = "Erro: Destino igual a origem."; msg.style.color = 'red'; return; }
+
+            const res = await fetch('/api/pix', {
+                method: 'POST', headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({sender: currentUser, recipient, amount})
+            });
+            const data = await res.json();
+            
+            if(data.success) {
+                msg.innerText = "Pix realizado e auditado com sucesso!"; msg.style.color = '#00ffcc';
+                document.getElementById('pixAmount').value = '';
+                atualizarDados();
+            } else {
+                msg.innerText = data.error; msg.style.color = 'red';
+            }
+        }
+
+        function logout() { location.reload(); }
+    </script>
+</body>
+</html>
