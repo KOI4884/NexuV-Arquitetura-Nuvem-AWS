@@ -42,6 +42,8 @@ Conforme os critérios de aceite do laboratório, o repositório está organizad
 *   [Terraform](https://www.terraform.io/downloads) instalado.
 *   [Docker](https://www.docker.com/) instalado.
 
+---
+
 ### Passo 1: Subir a Infraestrutura
 Acesse o diretório de infraestrutura e inicie o provisionamento:
 
@@ -70,10 +72,15 @@ cd ../infra
 terraform destroy -auto-approve
 ```
 
+---
+
 ### 👥 Colaboradores
 Equipe técnica responsável pelo planejamento arquitetural, integração de serviços e demonstração das evidências:
 
 Enrico Carvalho Marques
+
 João Gustavo da Silva
+
 Luigi Arnosti Reginato
+
 Naftali Lweji Bernado da Costa
