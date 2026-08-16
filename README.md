@@ -77,7 +77,7 @@ terraform destroy -auto-approve
 ## 👥 Colaboradores
 Equipe técnica responsável pelo planejamento arquitetural, integração de serviços e demonstração das evidências:
 
-* [**Enrico Carvalho Marques**](https://github.com/link-do-enrico)
+* [**Enrico Carvalho Marques**](https://github.com/EnricoModz)
 * [**João Gustavo da Silva**](https://github.com/KOI4884)
 * [**Luigi Arnosti Reginato**](https://github.com/luigi-reginato)
 * [**Naftali Lweji Bernado da Costa**](https://github.com/NaftalidaCosta)
