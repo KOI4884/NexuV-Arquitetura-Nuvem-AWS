@@ -64,7 +64,7 @@ docker tag payment-app:latest <SEU_ACCOUNT_ID>[.dkr.ecr.us-east-1.amazonaws.com/
 docker push <SEU_ACCOUNT_ID>[.dkr.ecr.us-east-1.amazonaws.com/payment-app-repo:latest](https://.dkr.ecr.us-east-1.amazonaws.com/payment-app-repo:latest)
 ```
 
-### Passo 3: Limpeza (Cleanup / FinOps)
+### Passo 3: Limpeza (Cleanup)
 Para evitar custos desnecessários após a validação do laboratório, destrua todos os recursos:
 
 ```bash
