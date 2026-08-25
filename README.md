@@ -7,7 +7,7 @@
 
 Este repositório contém a arquitetura e a operação de um workload de referência na AWS, desenvolvido como projeto da unidade curricular de **Pentesting em Nuvem** do SENAI. 
 
-A missão do projeto foi transformar os fundamentos de computação em nuvem em uma arquitetura funcional, observável, reproduzível e com consciência de custos (FinOps). A solução entrega um microsserviço (CyberBank) projetado para receber eventos sintéticos e validar lógicas de negócios transacionais focadas em cibersegurança e resiliência.
+A missão do projeto foi transformar os fundamentos de computação em nuvem em uma arquitetura funcional, observável, reproduzível e com consciência de custos (FinOps). A solução entrega um microsserviço (CyberBank) projetado para receber eventos sintéticos e validar lógicas de negócios transacionais focadas em cibersegurança e resiliência
 
 ---
 
